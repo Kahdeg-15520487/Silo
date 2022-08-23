@@ -1,3 +1,5 @@
+using Silo.Util;
+
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -15,17 +17,19 @@ namespace Silo
         /// <summary>
         /// Input ports
         /// </summary>
-        protected readonly List<Port> InPorts;
+        protected List<Port> InPorts;
+        public int InPortsCount => this.InPorts.Count;
         /// <summary>
         /// Output ports
         /// </summary>
-        protected readonly List<Port> OutPorts;
+        protected List<Port> OutPorts;
+        public int OutPortsCount => this.OutPorts.Count;
 
         /// <summary>
         /// Last input
         /// </summary>
-        protected bool[] Last = { };
-        
+        protected bool[] Last = Array.Empty<bool>();
+
         /// <summary>
         /// Current input
         /// </summary>
@@ -142,7 +146,7 @@ namespace Silo
                 UpdateOutput(start + i, values[i]);
             }
         }
-        
+
         /// <summary>
         /// Get the state of the 0th output port
         /// </summary>
@@ -193,6 +197,16 @@ namespace Silo
                  + string.Join("\t", Enumerable.Range(0, OutPorts.Count).Select(a => $" {a}. "));
         }
 
+        public bool[] ToBools()
+        {
+            return OutPorts.Select(a => a.State).Reverse().ToArray();
+        }
+
+        public byte ToByte()
+        {
+            return OutPorts.Select(a => a.State).Reverse().ToArray().ConvertToByte();
+        }
+
         /// <summary>
         /// Save the current input port state
         /// </summary>
@@ -211,12 +225,12 @@ namespace Silo
                 //do nothing
                 return;
             }
-            
+
             DoUpdate();
-            
+
             SaveCurrentState();
         }
-        
+
         /// <summary>
         /// Update the component
         /// </summary>

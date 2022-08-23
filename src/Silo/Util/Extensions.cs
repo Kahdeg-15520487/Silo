@@ -27,7 +27,7 @@ namespace Silo.Util
         {
             return Frequency.Parse($"{a} Hz");
         }
-        
+
         /// <summary>
         /// Represent this int in Kilohertz
         /// </summary>
@@ -47,19 +47,19 @@ namespace Silo.Util
         {
             return Frequency.Parse($"{a} kHz");
         }
-        
+
         /// <summary>
         /// Convert this byte to a little endian bool array
         /// </summary>
         /// <param name="b">Byte value</param>
         /// <returns>Little endian bool array</returns>
-        public static bool[] ConvertToBoolArray(this byte b)
+        public static bool[] ConvertToBoolArray(this byte b, int count = 8)
         {
             // prepare the return result
-            var result = new bool[8];
+            var result = new bool[count];
 
             // check each bit in the byte. if 1 set to true, if 0 set to false
-            for (var i = 0; i < 8; i++)
+            for (var i = 0; i < count; i++)
                 result[i] = (b & (1 << i)) != 0;
 
             // reverse the array
@@ -84,12 +84,21 @@ namespace Silo.Util
             {
                 // if the element is 'true' set the bit at that position
                 if (b)
-                    result |= (byte) (1 << (7 - index));
+                    result |= (byte)(1 << (7 - index));
 
                 index++;
             }
 
             return result;
+        }
+
+        public static uint ConvertToUInt(this bool[] source)
+        {
+            if (source.Length > 32) throw new ArgumentException("Can only fit 32 bits in a uint");
+
+            uint r = 0;
+            for (int i = 0; i < source.Length; i++) if (source[i]) r |= 1 << (source.Length - i);
+            return r;
         }
     }
 }

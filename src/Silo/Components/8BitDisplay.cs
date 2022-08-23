@@ -1,4 +1,5 @@
 using System.Linq;
+
 using Silo.Util;
 
 namespace Silo.Components
@@ -33,7 +34,7 @@ namespace Silo.Components
         /// </summary>
         public override void DoUpdate()
         {
-            Value = InPorts.Select(a => a.State).ToArray().ConvertToByte();
+            Value = InPorts.Select(a => a.State).Reverse().ToArray().ConvertToByte();
         }
 
         /// <summary>
@@ -42,7 +43,7 @@ namespace Silo.Components
         /// <returns></returns>
         public override string ToString()
         {
-            return $"Value: {Value}";
+            return $"Value: {Convert.ToString(Value, 2).PadLeft(8, '0')}{Environment.NewLine}Pos:   76543210";
         }
     }
 }
