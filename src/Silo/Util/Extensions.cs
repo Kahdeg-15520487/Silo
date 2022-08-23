@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 // ReSharper disable InconsistentNaming
 
 namespace Silo.Util
@@ -53,6 +54,46 @@ namespace Silo.Util
         /// </summary>
         /// <param name="b">Byte value</param>
         /// <returns>Little endian bool array</returns>
+        public static bool[] ConvertToBoolArray(this int b, int count = 32)
+        {
+            // prepare the return result
+            var result = new bool[count];
+
+            // check each bit in the byte. if 1 set to true, if 0 set to false
+            for (var i = 0; i < count; i++)
+                result[i] = (b & (1 << i)) != 0;
+
+            // reverse the array
+            Array.Reverse(result);
+
+            return result;
+        }
+
+        /// <summary>
+        /// Convert this byte to a little endian bool array
+        /// </summary>
+        /// <param name="b">Byte value</param>
+        /// <returns>Little endian bool array</returns>
+        public static bool[] ConvertToBoolArray(this uint b, int count = 32)
+        {
+            // prepare the return result
+            var result = new bool[count];
+
+            // check each bit in the byte. if 1 set to true, if 0 set to false
+            for (var i = 0; i < count; i++)
+                result[i] = (b & (1 << i)) != 0;
+
+            // reverse the array
+            Array.Reverse(result);
+
+            return result;
+        }
+
+        /// <summary>
+        /// Convert this byte to a little endian bool array
+        /// </summary>
+        /// <param name="b">Byte value</param>
+        /// <returns>Little endian bool array</returns>
         public static bool[] ConvertToBoolArray(this byte b, int count = 8)
         {
             // prepare the return result
@@ -92,13 +133,19 @@ namespace Silo.Util
             return result;
         }
 
+        /// <summary>
+        /// Convert this little endian bool array to a byte
+        /// </summary>
+        /// <param name="source">Little endian bool array</param>
+        /// <returns>Byte value</returns>
         public static uint ConvertToUInt(this bool[] source)
         {
             if (source.Length > 32) throw new ArgumentException("Can only fit 32 bits in a uint");
 
-            uint r = 0;
-            for (int i = 0; i < source.Length; i++) if (source[i]) r |= 1 << (source.Length - i);
-            return r;
+            uint[] r = new uint[1];
+            BitArray arr = new BitArray(source.Reverse().ToArray());
+            arr.CopyTo(r, 0);
+            return r[0];
         }
     }
 }

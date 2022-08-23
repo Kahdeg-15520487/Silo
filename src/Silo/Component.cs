@@ -193,18 +193,23 @@ namespace Silo
         /// <returns>Status of the output ports</returns>
         public override string ToString()
         {
-            return string.Join("\t", OutPorts.Select(a => a.State)) + "\n"
-                 + string.Join("\t", Enumerable.Range(0, OutPorts.Count).Select(a => $" {a}. "));
+            return string.Join("\t", OutPorts.Select(a => a.State).Reverse()) + "\n"
+                 + string.Join("\t", Enumerable.Range(0, OutPorts.Count).Reverse().Select(a => $" {a}. "));
         }
 
-        public bool[] ToBools()
+        public virtual bool[] ToBools()
         {
             return OutPorts.Select(a => a.State).Reverse().ToArray();
         }
 
-        public byte ToByte()
+        public virtual byte ToByte()
         {
             return OutPorts.Select(a => a.State).Reverse().ToArray().ConvertToByte();
+        }
+
+        public virtual uint ToUInt()
+        {
+            return OutPorts.Select(a => a.State).Reverse().ToArray().ConvertToUInt();
         }
 
         /// <summary>
